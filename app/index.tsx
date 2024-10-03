@@ -1,19 +1,21 @@
-import { Stack, Link } from 'expo-router';
+import React from 'react';
+import { Button } from '~/components/Button';  // Adjusted path
+import { Container } from '~/components/Container';  // Adjusted path
+import { Text } from 'tamagui';  // Using Tamagui Text component
 
-import { Button } from '~/app/components/Button';
-import { Container } from '~/app/components/Container';
-import { ScreenContent } from '~/app/components/ScreenContent';
+const IndexScreen = () => {
+    return (
+        <Container>
+            <Text fontSize={24} fontWeight="bold">
+                Welcome to the App
+            </Text>
+            <Text fontSize={16} marginBottom={20}>
+                This is your first screen!
+            </Text>
+            <Button onPress={() => alert('Button Pressed!')}>
+            </Button>
+        </Container>
+    );
+};
 
-export default function Home() {
-  return (
-    <>
-      <Stack.Screen options={{ title: 'Home' }} />
-      <Container>
-        <ScreenContent path="app/index.tsx" title="Home" />
-        <Link href={{ pathname: '/details', params: { name: 'Dan' } }} asChild>
-          <Button title="Show Details" />
-        </Link>
-      </Container>
-    </>
-  );
-}
+export default IndexScreen;

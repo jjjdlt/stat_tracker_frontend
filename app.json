@@ -3,12 +3,12 @@
     "name": "stattracker",
     "slug": "stattracker",
     "version": "1.0.0",
-
+    "entryPoint": "expo-router/entry",
     "scheme": "stattracker",
     "web": {
       "bundler": "metro",
       "output": "static",
-      "favicon": "./assets/favicon.png"
+      "favicon": "./assets/favicon.png",
     },
     "plugins": ["expo-router"],
     "experiments": {
