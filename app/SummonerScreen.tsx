@@ -1,37 +1,29 @@
 import React, { useEffect, useState } from 'react';
-import { YStack, Text } from 'tamagui';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useRouter } from 'expo-router';
-import { getHostIP } from '../utils/ipv4detector';
+import { YStack, Text } from 'tamagui'; // Import Text from Tamagui
 import Avatar from '../components/Avatar';
 import SummonerInfo from '../components/SummonerInfo';
 import MatchHistory from '../components/MatchHistory';
 import BackButton from '../components/BackButton';
 import { useGlobalState } from '../context/GlobalState';
-
-interface SummonerInfo {
-    summonerLevel: number;
-    accountId: string;
-    profileIconId: number;
-}
+import { useSummonerSetup } from '../hooks/useSummonerSetup';
 
 const SummonerScreen = () => {
-    const { puuid } = useGlobalState();  // Use global state for puuid
-    const [summonerInfo, setSummonerInfo] = useState<SummonerInfo | null>(null);
-    const [matchHistory, setMatchHistory] = useState<string[] | null>(null);
+    const { puuid } = useGlobalState();
+    const { fetchSummonerInfo, fetchMatchHistory, summonerInfo = {}, matchHistory = [] } = useSummonerSetup();
     const [loading, setLoading] = useState<boolean>(true);
-    const router = useRouter();
+    const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
         const loadStoredData = async () => {
             try {
-                const savedPuuid = await AsyncStorage.getItem('puuid');
-                if (savedPuuid) {
-                    // Fetch summoner info and match history
-                    await fetchSummonerInfo(savedPuuid);
-                    await fetchMatchHistory(savedPuuid);
+                if (!puuid) {
+                    setError('PUUID not found.');
+                    return;
                 }
+
+                await Promise.all([fetchSummonerInfo(puuid), fetchMatchHistory(puuid)]);
             } catch (error) {
+                setError('Error loading stored data');
                 console.error('Error loading stored data:', error);
             } finally {
                 setLoading(false);
@@ -39,33 +31,7 @@ const SummonerScreen = () => {
         };
 
         loadStoredData();
-    }, []);
-
-    const fetchSummonerInfo = async (puuid: string) => {
-        const ipAddress = await getHostIP();
-        if (!ipAddress) return;
-
-        try {
-            const response = await fetch(`http://${ipAddress}:8000/summoner-info`);
-            const data = await response.json();
-            setSummonerInfo(data);
-        } catch (error) {
-            console.error('Error fetching summoner info:', error);
-        }
-    };
-
-    const fetchMatchHistory = async (puuid: string) => {
-        const ipAddress = await getHostIP();
-        if (!ipAddress) return;
-
-        try {
-            const response = await fetch(`http://${ipAddress}:8000/summoner-matches`);
-            const data = await response.json();
-            setMatchHistory(data.matches);
-        } catch (error) {
-            console.error('Error fetching match history:', error);
-        }
-    };
+    }, [puuid]);
 
     if (loading) {
         return <Text>Loading...</Text>;
@@ -74,13 +40,14 @@ const SummonerScreen = () => {
     return (
         <YStack space alignItems="center" padding={20} marginTop="10%">
             <Text fontSize={20} fontWeight="bold">Summoner Info</Text>
-            {summonerInfo ? (
+            {error && <Text color="red">{error}</Text>}
+            {summonerInfo && summonerInfo.profileIconId ? (
                 <>
                     <Avatar profileIconId={summonerInfo.profileIconId} />
-                    <SummonerInfo />
+                    <SummonerInfo summonerLevel={summonerInfo.summonerLevel} />
                 </>
             ) : (
-                <Text>Loading Summoner Info...</Text>
+                <Text>No Summoner Info Available</Text>
             )}
 
             <Text fontSize={20} fontWeight="bold" marginTop={20}>Match History</Text>

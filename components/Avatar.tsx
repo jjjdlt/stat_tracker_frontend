@@ -1,4 +1,3 @@
-// components/Avatar.tsx
 import React from 'react';
 import { Avatar as TamaguiAvatar } from 'tamagui';
 

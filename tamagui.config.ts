@@ -2,8 +2,29 @@ import { createAnimations } from '@tamagui/animations-react-native';
 import { createInterFont } from '@tamagui/font-inter';
 import { createMedia } from '@tamagui/react-native-media-driver';
 import { shorthands } from '@tamagui/shorthands';
-import { themes, tokens } from '@tamagui/themes';
+import { tokens } from '@tamagui/themes';  // Use only tokens from Tamagui themes
 import { createTamagui, styled, SizableText, H1, YStack, Button as ButtonTamagui } from 'tamagui';
+import { Appearance } from 'react-native';  // Import Appearance for detecting color scheme
+
+// Utility function to get the system's color theme (dark or light)
+export const getSystemTheme = () => {
+  const colorScheme = Appearance.getColorScheme(); // Detect system color scheme
+  return colorScheme === 'dark' ? 'dark' : 'light';
+};
+
+// Define custom light and dark themes
+const customThemes = {
+  light: {
+    background: '#FFFFFF',  // Light mode background
+    text: '#000000',
+    buttonBackground: '#6366F1',
+  },
+  dark: {
+    background: '#000000',  // Dark mode background
+    text: '#FFFFFF',
+    buttonBackground: '#5a5fcf',
+  },
+};
 
 const animations = createAnimations({
   bouncy: {
@@ -26,7 +47,6 @@ const animations = createAnimations({
 });
 
 const headingFont = createInterFont();
-
 const bodyFont = createInterFont();
 
 export const Container = styled(YStack, {
@@ -41,27 +61,27 @@ export const Main = styled(YStack, {
 });
 
 export const Title = styled(H1, {
-  color: '#000',
+  color: '$text',  // Use theme token for dynamic text color
   size: '$12',
 });
 
 export const Subtitle = styled(SizableText, {
-  color: '#38434D',
+  color: '$text',  // Use theme token for dynamic text color
   size: '$9',
 });
 
 export const Button = styled(ButtonTamagui, {
-  backgroundColor: '#6366F1',
+  backgroundColor: '$buttonBackground',  // Use theme token for button background
   borderRadius: 28,
   hoverStyle: {
-    backgroundColor: '#5a5fcf',
+    backgroundColor: '$buttonBackground',
   },
   pressStyle: {
-    backgroundColor: '#5a5fcf',
+    backgroundColor: '$buttonBackground',
   },
   maxWidth: 500,
 
-  // Shaddows
+  // Shadows
   shadowColor: '#000',
   shadowOffset: {
     height: 2,
@@ -72,16 +92,13 @@ export const Button = styled(ButtonTamagui, {
 
   // Button text
   color: '#FFFFFF',
-  fontWeight: '600', // Is not passed down to the text. Probably a bug in Tamagui: https://github.com/tamagui/tamagui/issues/1156#issuecomment-1802594930
+  fontWeight: '600',
   fontSize: 16,
 });
 
 const config = createTamagui({
-  light: {
-    color: {
-      background: 'gray',
-      text: 'black',
-    },
+  themes: {
+    ...customThemes,  // Merge custom themes into the existing configuration
   },
   defaultFont: 'body',
   animations,
@@ -92,8 +109,7 @@ const config = createTamagui({
     body: bodyFont,
     heading: headingFont,
   },
-  themes,
-  tokens,
+  tokens,  // Use tokens from @tamagui/themes for consistency
   media: createMedia({
     xs: { maxWidth: 660 },
     sm: { maxWidth: 800 },
@@ -115,8 +131,6 @@ const config = createTamagui({
 type AppConfig = typeof config;
 
 // Enable auto-completion of props shorthand (ex: jc="center") for Tamagui templates.
-// Docs: https://tamagui.dev/docs/core/configuration
-
 declare module 'tamagui' {
   interface TamaguiCustomConfig extends AppConfig {}
 }

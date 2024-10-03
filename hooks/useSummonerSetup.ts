@@ -12,6 +12,8 @@ export const useSummonerSetup = () => {
     const [error, setError] = useState<string | null>(null);
     const [hasCookies, setHasCookies] = useState<boolean>(false);
     const [hostIP, setHostIP] = useState<string | null>(null);
+    const [summonerInfo, setSummonerInfo] = useState<any | null>(null);
+    const [matchHistory, setMatchHistory] = useState<string[] | null>(null);
     const router = useRouter();
 
     useEffect(() => {
@@ -34,6 +36,37 @@ export const useSummonerSetup = () => {
         loadStoredData();
     }, []);
 
+    // Function to fetch Summoner Info
+    const fetchSummonerInfo = async (puuid: string) => {
+        const ipAddress = await getHostIP();
+        if (!ipAddress) return;
+
+        try {
+            const response = await fetch(`http://${ipAddress}:8000/summoner-info`);
+            const data = await response.json();
+            setSummonerInfo(data);  // Set the SummonerInfo here
+        } catch (error) {
+            setError('Error fetching summoner info');
+            console.error('Error fetching summoner info:', error);
+        }
+    };
+
+    // Function to fetch Match History
+    const fetchMatchHistory = async (puuid: string) => {
+        const ipAddress = await getHostIP();
+        if (!ipAddress) return;
+
+        try {
+            const response = await fetch(`http://${ipAddress}:8000/summoner-matches`);
+            const data = await response.json();
+            setMatchHistory(data.matches);
+        } catch (error) {
+            setError('Error fetching match history');
+            console.error('Error fetching match history:', error);
+        }
+    };
+
+    // Function to handle form submission
     const handleSubmit = async () => {
         if (!hostIP) {
             setError('Unable to detect host IP.');
@@ -76,6 +109,7 @@ export const useSummonerSetup = () => {
         }
     };
 
+    // Function to handle skipping form and using existing data
     const handleSkip = async () => {
         const savedPuuid = await AsyncStorage.getItem('puuid');
         const savedGameName = await AsyncStorage.getItem('gameName');
@@ -99,5 +133,9 @@ export const useSummonerSetup = () => {
         handleSkip,
         error,
         hasCookies,
+        summonerInfo,  // Return summonerInfo from the hook
+        fetchSummonerInfo,
+        matchHistory,
+        fetchMatchHistory,
     };
 };

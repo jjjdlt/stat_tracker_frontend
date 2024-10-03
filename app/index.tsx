@@ -1,4 +1,3 @@
-// app/IndexScreen.tsx
 import React from 'react';
 import { Button, YStack, Input, Text } from 'tamagui';
 import { useSummonerSetup } from '../hooks/useSummonerSetup';
@@ -16,7 +15,7 @@ const IndexScreen = () => {
     } = useSummonerSetup();
 
     const handleKeyPress = (e: React.KeyboardEvent) => {
-        if (e.key == 'Enter') {
+        if (e.key === 'Enter') {
             handleSubmit();
         }
     };
@@ -32,7 +31,9 @@ const IndexScreen = () => {
                 placeholder="gameName"
                 value={gameName}
                 onChangeText={setGameNameInput}
+                onKeyPress={handleKeyPress}
                 width={250}
+                accessibilityLabel="Game Name Input"
             />
             <Input
                 placeholder="tagLine"
@@ -40,17 +41,18 @@ const IndexScreen = () => {
                 onChangeText={setTagLineInput}
                 onKeyPress={handleKeyPress}
                 width={250}
+                accessibilityLabel="Tag Line Input"
             />
 
             {/* Submit button */}
-            <Button onPress={handleSubmit}>Submit</Button>
+            <Button onPress={handleSubmit} accessibilityLabel="Submit Button">Submit</Button>
 
             {/* Show error if any */}
             {error && <Text color="red">{error}</Text>}
 
             {/* Show Skip button if cookies are available */}
             {hasCookies && (
-                <Button marginTop="$4" onPress={handleSkip}>
+                <Button marginTop="$4" onPress={handleSkip} accessibilityLabel="Skip Button">
                     Skip to Summoner Screen
                 </Button>
             )}

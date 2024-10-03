@@ -1,7 +1,7 @@
-// components/BackButton.tsx
 import React from 'react';
 import { Button } from 'tamagui';
 import { useRouter } from 'expo-router';
+import { Text } from 'tamagui';  // Ensure text is wrapped in <Text>
 
 const BackButton = () => {
     const router = useRouter();
@@ -12,7 +12,7 @@ const BackButton = () => {
             left={10}
             onPress={() => router.push('/')}
         >
-            Back to Home
+            <Text>Back to Home</Text>
         </Button>
     );
 };
