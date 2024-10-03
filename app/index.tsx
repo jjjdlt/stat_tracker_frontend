@@ -3,17 +3,27 @@ import { Button, YStack, Input, Text } from 'tamagui';
 import { useGlobalState } from '../context/GlobalState';
 import { useRouter } from 'expo-router';
 import AsyncStorage from '@react-native-async-storage/async-storage';  // Import AsyncStorage
+import { getHostIP } from '../utils/ipv4detector';  // Import the getHostIP function
+
 
 const IndexScreen = () => {
     const { setPuuid, setGameName, setTagLine } = useGlobalState();
     const [gameName, setGameNameInput] = useState('');
     const [tagLine, setTagLineInput] = useState('');
     const [error, setError] = useState<string | null>(null);
-    const [hasCookies, setHasCookies] = useState<boolean>(false);  // Track if cookies are found
+    const [hasCookies, setHasCookies] = useState<boolean>(false);
+    const [hostIP, setHostIP] = useState<string | null>(null);  // To store the dynamic IP// Track if cookies are found
     const router = useRouter();
 
     // Check AsyncStorage on initial load
     useEffect(() => {
+        const loadHostIP = async () => {
+            const ipAddress = await getHostIP();  // Get the IP of the device running Expo Go
+            setHostIP(ipAddress);  // Save the IP address to be used in the fetch requests
+        };
+
+        loadHostIP();
+
         const loadStoredData = async () => {
             const savedGameName = await AsyncStorage.getItem('gameName');
             const savedTagLine = await AsyncStorage.getItem('tagLine');
@@ -28,8 +38,13 @@ const IndexScreen = () => {
     }, []);
 
     const handleSubmit = async () => {
+        if (!hostIP) {
+            setError('Unable to detect host IP.');
+            return;
+        }
+
         try {
-            const response = await fetch('http://127.0.0.1:8000/puuid', {
+            const response = await fetch(`http://${hostIP}:8000/puuid`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -39,7 +54,6 @@ const IndexScreen = () => {
                     tagLine: tagLine.trim(),
                 }),
             });
-
             if (!response.ok) {
                 throw new Error('Failed to fetch PUUID');
             }
@@ -80,7 +94,7 @@ const IndexScreen = () => {
     };
 
     return (
-        <YStack space alignItems="center" padding={20}>
+        <YStack space alignItems="center" padding={20} marginTop="10%">
             <Text fontSize={20} fontWeight="bold">
                 Enter your gameName and tagLine
             </Text>

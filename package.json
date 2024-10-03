@@ -1,14 +1,15 @@
 {
   "name": "stattracker",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "main": "expo-router/entry",
   "scripts": {
-    "android": "expo start --android",
-    "ios": "expo start --ios",
-    "start": "expo start",
+    "android": "npm run update-env && expo start --android",
+    "ios": "npm run update-env && expo start --ios",
     "lint": "eslint \"**/*.{js,jsx,ts,tsx}\" && prettier -c \"**/*.{js,jsx,ts,tsx,json}\"",
     "format": "eslint \"**/*.{js,jsx,ts,tsx}\" --fix && prettier \"**/*.{js,jsx,ts,tsx,json}\" --write",
-    "web": "expo start --web"
+    "web": "npm run update-env && expo start --web",
+    "update-env": "node updateEnv.js",
+    "start": "npm run update-env && expo start"
   },
   "dependencies": {
     "@expo/vector-icons": "^14.0.0",
@@ -20,9 +21,10 @@
     "@tamagui/shorthands": "1.74.8",
     "@tamagui/themes": "1.74.8",
     "expo": "51.0.36",
-    "expo-constants": "~16.0.1",
+    "expo-constants": "~16.0.2",
     "expo-font": "~12.0.5",
     "expo-linking": "~6.3.1",
+    "expo-network": "~6.0.1",
     "expo-router": "^3.5.23",
     "expo-status-bar": "~1.12.1",
     "expo-system-ui": "~3.0.4",
@@ -31,6 +33,7 @@
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-native": "0.74.5",
+    "react-native-dotenv": "^3.4.11",
     "react-native-feather": "^1.1.2",
     "react-native-gesture-handler": "~2.16.1",
     "react-native-reanimated": "~3.10.1",

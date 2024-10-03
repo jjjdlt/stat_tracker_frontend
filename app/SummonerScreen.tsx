@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { Avatar, YStack, Text, ListItem, Separator, YGroup, Group, SizableText, Button } from 'tamagui';
+import { Avatar, YStack, Text, ListItem, Separator, YGroup, Group, SizableText, Button, XStack } from 'tamagui';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useRouter } from 'expo-router';  // Import the useRouter hook for navigation
+import { useRouter } from 'expo-router';
+import { getHostIP } from '../utils/ipv4detector';
 
 interface SummonerInfo {
     summonerLevel: number;
@@ -16,7 +17,7 @@ const SummonerScreen = () => {
     const [summonerInfo, setSummonerInfo] = useState<SummonerInfo | null>(null);
     const [matchHistory, setMatchHistory] = useState<string[] | null>(null);
     const [loading, setLoading] = useState<boolean>(true);
-    const router = useRouter();  // Use router for navigation
+    const router = useRouter();
 
     useEffect(() => {
         const loadStoredData = async () => {
@@ -44,9 +45,16 @@ const SummonerScreen = () => {
         loadStoredData();
     }, []);
 
+// Fetch Summoner Info with dynamic IP
     const fetchSummonerInfo = async (puuid: string) => {
+        const ipAddress = await getHostIP();  // Get the IP dynamically
+        if (!ipAddress) {
+            console.error('Error: Unable to get the host IP');
+            return;
+        }
+
         try {
-            const response = await fetch(`http://127.0.0.1:8000/summoner-info`);
+            const response = await fetch(`http://${ipAddress}:8000/summoner-info`);
             const data = await response.json();
             setSummonerInfo(data);
         } catch (error) {
@@ -54,9 +62,16 @@ const SummonerScreen = () => {
         }
     };
 
+// Fetch Match History with dynamic IP
     const fetchMatchHistory = async (puuid: string) => {
+        const ipAddress = await getHostIP();  // Get the IP dynamically
+        if (!ipAddress) {
+            console.error('Error: Unable to get the host IP');
+            return;
+        }
+
         try {
-            const response = await fetch(`http://127.0.0.1:8000/summoner-matches`);
+            const response = await fetch(`http://${ipAddress}:8000/summoner-matches`);
             const data = await response.json();
             setMatchHistory(data.matches);
         } catch (error) {
@@ -69,7 +84,7 @@ const SummonerScreen = () => {
     }
 
     return (
-        <YStack space alignItems="center" padding={20}>
+        <YStack space alignItems="center" padding={20} marginTop="10%">
             <Text fontSize={20} fontWeight="bold">Summoner Info</Text>
             {summonerInfo ? (
                 <>
@@ -82,16 +97,16 @@ const SummonerScreen = () => {
                         <Avatar.Fallback backgroundColor="$blue10" />
                     </Avatar>
 
-                    {/* Grouping Summoner Info */}
+                    {/* XStack inside Group for displaying Summoner Info */}
                     <Group space="$3" bordered width={300}>
                         <Group.Item>
-                            <SizableText size="$4" fontWeight="bold">{gameName}</SizableText>
-                        </Group.Item>
-                        <Group.Item>
-                            <SizableText size="$4" color="$gray9">#{tagLine}</SizableText>
-                        </Group.Item>
-                        <Group.Item>
-                            <SizableText size="$4">Level {summonerInfo.summonerLevel}</SizableText>
+                            <XStack justifyContent="center" alignItems="center" space="$4">
+                                <SizableText marginRight="1%" size="$4" fontWeight="bold">{gameName}</SizableText>
+                                <SizableText size="$4" color="$gray9" marginLeft="$1">#{tagLine}</SizableText>
+                            </XStack>
+                            <XStack justifyContent="space-evenly" alignItems="center" space="$2">
+                                <SizableText size="$4">Level {summonerInfo.summonerLevel}</SizableText>
+                            </XStack>
                         </Group.Item>
                     </Group>
                 </>
@@ -118,9 +133,15 @@ const SummonerScreen = () => {
             )}
 
             {/* Back button to navigate to the home (index) screen */}
-            <Button marginTop="$4" onPress={() => router.push('/')}>
+            <Button
+                position="absolute"
+                top={10}
+                left={10}
+                onPress={() => router.push('/')}
+            >
                 Back to Home
             </Button>
+
         </YStack>
     );
 };
