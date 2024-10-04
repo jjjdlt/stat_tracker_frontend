@@ -6,24 +6,13 @@ import { tokens } from '@tamagui/themes';  // Use only tokens from Tamagui theme
 import { createTamagui, styled, SizableText, H1, YStack, Button as ButtonTamagui } from 'tamagui';
 import { Appearance } from 'react-native';  // Import Appearance for detecting color scheme
 
+// Import generated themes from the output file
+import { themes } from './src/theme-builder';
+
 // Utility function to get the system's color theme (dark or light)
 export const getSystemTheme = () => {
   const colorScheme = Appearance.getColorScheme(); // Detect system color scheme
   return colorScheme === 'dark' ? 'dark' : 'light';
-};
-
-// Define custom light and dark themes
-const customThemes = {
-  light: {
-    background: '#FFFFFF',  // Light mode background
-    text: '#000000',
-    buttonBackground: '#6366F1',
-  },
-  dark: {
-    background: '#000000',  // Dark mode background
-    text: '#FFFFFF',
-    buttonBackground: '#5a5fcf',
-  },
 };
 
 const animations = createAnimations({
@@ -97,9 +86,7 @@ export const Button = styled(ButtonTamagui, {
 });
 
 const config = createTamagui({
-  themes: {
-    ...customThemes,  // Merge custom themes into the existing configuration
-  },
+  themes,  // Use the generated themes here
   defaultFont: 'body',
   animations,
   shouldAddPrefersColorThemes: true,

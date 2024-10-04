@@ -16,7 +16,7 @@
 
       "tsconfigPaths": true
     },
-
+    "backgroundColor": "#000000",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
 
@@ -29,7 +29,10 @@
     },
     "assetBundlePatterns": ["**/*"],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "infoPlist": {
+        "NSLocalNetworkUsageDescription": "This app requires access to your local network to function properly."
+      }
     },
     "android": {
       "adaptiveIcon": {

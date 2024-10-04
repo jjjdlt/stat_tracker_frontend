@@ -1,22 +1,21 @@
 import React, { useEffect, useState } from 'react';
 import { Appearance, useColorScheme } from 'react-native';
-import { TamaguiProvider, Theme } from 'tamagui';
-import { Stack } from 'expo-router'; // Use Stack from Expo Router for screen navigation
-import config from '../tamagui.config'; // Your Tamagui configuration
-import { GlobalStateProvider } from '../context/GlobalState'; // Import GlobalStateProvider for state management
+import { TamaguiProvider, Theme, YStack } from 'tamagui'; // Import YStack
+import { Stack } from 'expo-router';
+import config from '../tamagui.config';
+import { GlobalStateProvider } from '../context/GlobalState';
 
 const Layout = () => {
-    const systemColorScheme = useColorScheme(); // Get system color scheme (light or dark)
-    const [theme, setTheme] = useState(systemColorScheme); // Set initial theme based on system color scheme
+    const systemColorScheme = useColorScheme();
+    const [theme, setTheme] = useState(systemColorScheme);
 
     useEffect(() => {
         const subscription = Appearance.addChangeListener(({ colorScheme }) => {
-            setTheme(colorScheme); // Update theme on system color scheme change
+            setTheme(colorScheme);
         });
 
-        // Clean up listener on component unmount
         return () => {
-            subscription.remove(); // Correct way to remove the listener
+            subscription.remove();
         };
     }, []);
 
@@ -24,7 +23,9 @@ const Layout = () => {
         <TamaguiProvider config={config}>
             <GlobalStateProvider>
                 <Theme name={theme === 'dark' ? 'dark' : 'light'}>
-                    <Stack screenOptions={{ headerShown: false }} />
+                    <YStack flex={1} backgroundColor="$background">
+                        <Stack screenOptions={{ headerShown: false }} />
+                    </YStack>
                 </Theme>
             </GlobalStateProvider>
         </TamaguiProvider>

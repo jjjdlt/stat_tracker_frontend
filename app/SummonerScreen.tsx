@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { YStack, Text } from 'tamagui'; // Import Text from Tamagui
+import { YStack, Text } from 'tamagui';
 import Avatar from '../components/Avatar';
 import SummonerInfo from '../components/SummonerInfo';
 import MatchHistory from '../components/MatchHistory';
@@ -38,8 +38,8 @@ const SummonerScreen = () => {
     }
 
     return (
-        <YStack space alignItems="center" padding={20} marginTop="10%">
-            <Text fontSize={20} fontWeight="bold">Summoner Info</Text>
+        <YStack flex={1} space alignItems="center" padding={20} marginTop="10%" backgroundColor="$background"> {/* Dynamic background */}
+            <Text fontSize={20} fontWeight="bold" color="$text">Summoner Info</Text> {/* Use theme text color */}
             {error && <Text color="red">{error}</Text>}
             {summonerInfo && summonerInfo.profileIconId ? (
                 <>
@@ -47,10 +47,10 @@ const SummonerScreen = () => {
                     <SummonerInfo summonerLevel={summonerInfo.summonerLevel} />
                 </>
             ) : (
-                <Text>No Summoner Info Available</Text>
-            )}
+                <Text color="$text">No Summoner Info Available</Text>
+                )}
 
-            <Text fontSize={20} fontWeight="bold" marginTop={20}>Match History</Text>
+            <Text fontSize={20} fontWeight="bold" marginTop={20} color="$text">Match History</Text>
             <MatchHistory matchHistory={matchHistory} />
 
             <BackButton />
