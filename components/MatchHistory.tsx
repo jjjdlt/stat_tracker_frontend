@@ -6,7 +6,9 @@ interface MatchHistoryProps {
 }
 
 const MatchHistory = ({ matchHistory }: MatchHistoryProps) => {
-    if (!matchHistory || matchHistory.length === 0) return <Text>No Match History Available</Text>;
+    if (!matchHistory || matchHistory.length === 0) {
+        return <Text>No Match History Available</Text>;  // Fallback when no match history
+    }
 
     return (
         <YGroup alignSelf="center" bordered width={300} size="$4" separator={<Separator />}>
@@ -15,8 +17,8 @@ const MatchHistory = ({ matchHistory }: MatchHistoryProps) => {
                     <ListItem
                         hoverTheme
                         pressTheme
-                        title={<Text>Match ID: {matchId}</Text>}  // Ensure strings are inside Tamagui Text
-                        subTitle={<Text>Match {index + 1}</Text>}  // Ensure strings are inside Tamagui Text
+                        title={<Text>Match ID: {matchId}</Text>}  // Always wrap in <Text>
+                        subTitle={<Text>Match {index + 1}</Text>}  // Always wrap in <Text>
                     />
                 </YGroup.Item>
             ))}

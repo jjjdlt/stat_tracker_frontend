@@ -23,7 +23,6 @@ export const GlobalStateProvider: React.FC<GlobalStateProviderProps> = ({ childr
     return (
         <GlobalStateContext.Provider value={{ puuid, setPuuid, gameName, setGameName, tagLine, setTagLine }}>
             {children}
-            {/* <Text>"Some text"</Text> -- Only wrap text inside a Text component */}
         </GlobalStateContext.Provider>
     );
 

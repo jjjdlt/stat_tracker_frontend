@@ -7,11 +7,11 @@ import { GlobalStateProvider } from '../context/GlobalState';
 
 const Layout = () => {
     const systemColorScheme = useColorScheme();
-    const [theme, setTheme] = useState(systemColorScheme);
+    const [theme, setTheme] = useState<'light' | 'dark'>(systemColorScheme === 'dark' ? 'dark' : 'light');  // Handle default case
 
     useEffect(() => {
         const subscription = Appearance.addChangeListener(({ colorScheme }) => {
-            setTheme(colorScheme);
+            setTheme(colorScheme === 'dark' ? 'dark' : 'light');  // Explicitly set only "light" or "dark"
         });
 
         return () => {
@@ -22,7 +22,7 @@ const Layout = () => {
     return (
         <TamaguiProvider config={config}>
             <GlobalStateProvider>
-                <Theme name={theme === 'dark' ? 'dark' : 'light'}>
+                <Theme name={theme}>
                     <YStack flex={1} backgroundColor="$background">
                         <Stack screenOptions={{ headerShown: false }} />
                     </YStack>

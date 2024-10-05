@@ -1,4 +1,3 @@
-import React from 'react';
 import { Button, YStack, Input, Text } from 'tamagui';
 import { useSummonerSetup } from '../hooks/useSummonerSetup';
 
@@ -44,8 +43,10 @@ const IndexScreen = () => {
                 accessibilityLabel="Tag Line Input"
             />
 
-            {/* Submit button */}
-            <Button onPress={handleSubmit} accessibilityLabel="Submit Button">Submit</Button>
+            {/* Submit button using Tamagui's Button */}
+            <Button onPress={handleSubmit} accessibilityLabel="Submit Button">
+                Submit
+            </Button>
 
             {/* Show error if any */}
             {error && <Text color="red">{error}</Text>}

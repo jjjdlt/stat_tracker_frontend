@@ -37,19 +37,30 @@ export const useSummonerSetup = () => {
     }, []);
 
     // Function to fetch Summoner Info
+// In useSummonerSetup.ts
+
+// Function to fetch Summoner Info
     const fetchSummonerInfo = async (puuid: string) => {
         const ipAddress = await getHostIP();
-        if (!ipAddress) return;
+        if (!ipAddress) {
+            setError('Unable to detect host IP.');
+            return;
+        }
 
         try {
             const response = await fetch(`http://${ipAddress}:8000/summoner-info`);
+            if (!response.ok) {
+                throw new Error('Failed to fetch summoner info');
+            }
             const data = await response.json();
-            setSummonerInfo(data);  // Set the SummonerInfo here
+            setSummonerInfo(data);
         } catch (error) {
             setError('Error fetching summoner info');
             console.error('Error fetching summoner info:', error);
         }
     };
+
+// Similar adjustments for fetchMatchHistory and handleSubmit
 
     // Function to fetch Match History
     const fetchMatchHistory = async (puuid: string) => {
@@ -104,10 +115,11 @@ export const useSummonerSetup = () => {
             // Navigate to summoner screen
             router.push('/SummonerScreen');
         } catch (error) {
-            console.error('Error:', error);
             setError('Error fetching PUUID');
+            console.error('Error:', error);
         }
     };
+
 
     // Function to handle skipping form and using existing data
     const handleSkip = async () => {

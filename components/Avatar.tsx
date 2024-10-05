@@ -9,8 +9,8 @@ const Avatar = ({ profileIconId }: AvatarProps) => (
     <TamaguiAvatar circular size="$10">
         <TamaguiAvatar.Image
             accessibilityLabel="Profile Icon"
-            src={`https://ddragon.leagueoflegends.com/cdn/13.1.1/img/profileicon/${profileIconId}.png`}
-        />
+            src={profileIconId ? `https://ddragon.leagueoflegends.com/cdn/13.1.1/img/profileicon/${profileIconId}.png`
+                : 'https://ddragon.leagueoflegends.com/cdn/13.1.1/img/profileicon/1.png'}        />
         <TamaguiAvatar.Fallback backgroundColor="$blue10" />
     </TamaguiAvatar>
 );
