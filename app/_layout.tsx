@@ -1,35 +1,56 @@
-import React, { useEffect, useState } from 'react';
-import { Appearance, useColorScheme } from 'react-native';
-import { TamaguiProvider, Theme, YStack } from 'tamagui'; // Import YStack
-import { Stack } from 'expo-router';
-import config from '../tamagui.config';
-import { GlobalStateProvider } from '../context/GlobalState';
+import React, { ReactNode, Fragment } from 'react';
+import { TamaguiProvider, Theme, YStack, Button, Text } from 'tamagui';
+import { Stack } from 'expo-router'; // Handles navigation between screens
+import config from '../tamagui.config'; // Your Tamagui configuration
+import { GlobalStateProvider, useGlobalState } from '../context/GlobalState'; // Global state provider
 
-const Layout = () => {
-    const systemColorScheme = useColorScheme();
-    const [theme, setTheme] = useState<'light' | 'dark'>(systemColorScheme === 'dark' ? 'dark' : 'light');  // Handle default case
+// This layout wraps around all the screens
+interface LayoutProps {
+    children: ReactNode;  // Ensure children is properly typed
+}
 
-    useEffect(() => {
-        const subscription = Appearance.addChangeListener(({ colorScheme }) => {
-            setTheme(colorScheme === 'dark' ? 'dark' : 'light');  // Explicitly set only "light" or "dark"
-        });
-
-        return () => {
-            subscription.remove();
-        };
-    }, []);
-
+const Layout: React.FC<LayoutProps> = ({ children }) => {
     return (
-        <TamaguiProvider config={config}>
-            <GlobalStateProvider>
-                <Theme name={theme}>
-                    <YStack flex={1} backgroundColor="$background">
-                        <Stack screenOptions={{ headerShown: false }} />
-                    </YStack>
-                </Theme>
-            </GlobalStateProvider>
-        </TamaguiProvider>
+        <YStack flex={1} alignItems="center" justifyContent="center" space="$6" backgroundColor="$background">
+            {children}  {/* Render children */}
+        </YStack>
     );
 };
 
-export default Layout;
+// Unified wrapper to manage state and theme
+const UnifiedLayout: React.FC = () => {
+    return (
+        <GlobalStateProvider>
+            <TamaguiProvider config={config}>
+                <LayoutWithTheme />
+            </TamaguiProvider>
+        </GlobalStateProvider>
+    );
+};
+
+// Layout that accesses global state AFTER GlobalStateProvider is initialized
+const LayoutWithTheme: React.FC = () => {
+    const { theme, toggleTheme } = useGlobalState(); // Access global state
+
+    return (
+        <Theme name={theme}>
+            <Layout>
+                <Stack screenOptions={{ headerShown: false }} />
+                <Button
+                    onPress={toggleTheme}
+                    marginTop="$4"
+                    size="$6"
+                    backgroundColor="$buttonBackground"
+                    color="$buttonText"
+                    position="absolute"
+                    bottom={20}
+                    right={20}
+                >
+                    <Text>Toggle to {theme === 'light' ? 'Dark' : 'Light'} Mode</Text>
+                </Button>
+            </Layout>
+        </Theme>
+    );
+};
+
+export default UnifiedLayout;

@@ -37,9 +37,8 @@ const SummonerScreen = () => {
         return <Text>Loading...</Text>;
     }
 
-    // Safely check for summonerInfo and provide fallback values for profileIconId and summonerLevel
-    const profileIconId = summonerInfo?.profileIconId ?? 1; // Default to 1 if profileIconId is missing
-    const summonerLevel = summonerInfo?.summonerLevel ?? 'N/A'; // Provide a fallback for level
+    const profileIconId = summonerInfo?.profileIconId ?? 1;
+    const summonerLevel = summonerInfo?.summonerLevel ?? 'N/A';
 
     return (
         <YStack flex={1} space alignItems="center" padding={20} marginTop="10%" backgroundColor="$background">
@@ -47,7 +46,6 @@ const SummonerScreen = () => {
 
             {error && <Text color="red">{error}</Text>}
 
-            {/* Render the Avatar and SummonerInfo components if we have valid summonerInfo */}
             {typeof summonerInfo === 'object' && summonerInfo !== null ? (
                 <YStack>
                     <Avatar profileIconId={profileIconId} />
@@ -57,9 +55,13 @@ const SummonerScreen = () => {
                 <Text>No Summoner Info Available</Text>
             )}
 
-
             <Text fontSize={20} fontWeight="bold" marginTop={20} color="$text">Match History</Text>
-            <MatchHistory matchHistory={matchHistory} />
+
+            {matchHistory && matchHistory.length > 0 ? (
+                <MatchHistory matchHistory={matchHistory} />
+            ) : (
+                <Text>No match history available</Text>
+            )}
 
             <BackButton />
         </YStack>

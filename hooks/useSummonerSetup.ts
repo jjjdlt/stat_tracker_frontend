@@ -115,7 +115,7 @@ export const useSummonerSetup = () => {
             // Navigate to summoner screen
             router.push('/SummonerScreen');
         } catch (error) {
-            setError('Error fetching PUUID');
+            setError('Error fetching summoner info.');
             console.error('Error:', error);
         }
     };

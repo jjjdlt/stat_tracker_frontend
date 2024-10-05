@@ -7,6 +7,8 @@ interface GlobalStateProps {
     tagLine: string | null;
     setGameName: (gameName: string) => void;
     setTagLine: (tagLine: string) => void;
+    theme: 'light' | 'dark';  // Theme state
+    toggleTheme: () => void;   // Function to toggle theme
 }
 
 interface GlobalStateProviderProps {
@@ -19,13 +21,18 @@ export const GlobalStateProvider: React.FC<GlobalStateProviderProps> = ({ childr
     const [puuid, setPuuid] = useState<string | null>(null);
     const [gameName, setGameName] = useState<string | null>(null);
     const [tagLine, setTagLine] = useState<string | null>(null);
+    const [theme, setTheme] = useState<'light' | 'dark'>('light');  // Default to 'light'
+
+    // Function to toggle between light and dark themes
+    const toggleTheme = () => {
+        setTheme((prevTheme) => (prevTheme === 'light' ? 'dark' : 'light'));
+    };
 
     return (
-        <GlobalStateContext.Provider value={{ puuid, setPuuid, gameName, setGameName, tagLine, setTagLine }}>
+        <GlobalStateContext.Provider value={{ puuid, setPuuid, gameName, setGameName, tagLine, setTagLine, theme, toggleTheme }}>
             {children}
         </GlobalStateContext.Provider>
     );
-
 };
 
 export const useGlobalState = (): GlobalStateProps => {

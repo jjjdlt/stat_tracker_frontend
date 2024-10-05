@@ -1,7 +1,8 @@
-import { Button, YStack, Input, Text } from 'tamagui';
+import React from 'react';
+import { Button, Input, Text, YStack } from 'tamagui';
 import { useSummonerSetup } from '../hooks/useSummonerSetup';
 
-const IndexScreen = () => {
+const IndexScreen: React.FC = () => {
     const {
         gameName,
         tagLine,
@@ -20,19 +21,20 @@ const IndexScreen = () => {
     };
 
     return (
-        <YStack space alignItems="center" padding={20} marginTop="10%">
-            <Text fontSize={20} fontWeight="bold">
+        <YStack space="$6" alignItems="center" padding={20} marginTop="10%">  {/* Add layout structure */}
+            <Text fontSize={20} fontWeight="bold" color="$text">
                 Summon your stats
             </Text>
 
-            {/* Input fields for gameName and tagLine */}
             <Input
                 placeholder="gameName"
                 value={gameName}
                 onChangeText={setGameNameInput}
                 onKeyPress={handleKeyPress}
                 width={250}
-                accessibilityLabel="Game Name Input"
+                backgroundColor="$inputBackground"
+                color="$inputText"
+                borderColor="$border"
             />
             <Input
                 placeholder="tagLine"
@@ -40,21 +42,31 @@ const IndexScreen = () => {
                 onChangeText={setTagLineInput}
                 onKeyPress={handleKeyPress}
                 width={250}
-                accessibilityLabel="Tag Line Input"
+                backgroundColor="$inputBackground"
+                color="$inputText"
+                borderColor="$border"
             />
 
-            {/* Submit button using Tamagui's Button */}
-            <Button onPress={handleSubmit} accessibilityLabel="Submit Button">
-                Submit
+            <Button
+                onPress={handleSubmit}
+                backgroundColor="$buttonBackground"
+                color="$buttonText"
+                accessibilityLabel="Submit Button"
+            >
+                <Text>Submit</Text>
             </Button>
 
-            {/* Show error if any */}
-            {error && <Text color="red">{error}</Text>}
+            {error && <Text color="$errorColor">{error}</Text>}
 
-            {/* Show Skip button if cookies are available */}
             {hasCookies && (
-                <Button marginTop="$4" onPress={handleSkip} accessibilityLabel="Skip Button">
-                    Skip to Summoner Screen
+                <Button
+                    marginTop="$4"
+                    onPress={handleSkip}
+                    backgroundColor="$buttonBackground"
+                    color="$buttonText"
+                    accessibilityLabel="Skip Button"
+                >
+                    <Text>Skip to Summoner Screen</Text>
                 </Button>
             )}
         </YStack>
